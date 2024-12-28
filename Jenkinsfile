@@ -129,9 +129,9 @@ pipeline {
                          def buildResult = bat script: 'npm run build', returnStatus: true
 
                          if (buildResult != 0) {
-                              error "El proceso de build falló. Por favor, revisa los errores antes de continuar."
+                              error "El proceso de build falló."
                          }
-                         echo "Build realizado correctamente. El proyecto está listo para desplegarse."
+                         echo "Build realizada correctamente."
                     }
                }
           }
@@ -148,8 +148,7 @@ pipeline {
                               echo "Iniciando el despliegue en Vercel..."
                               def deployResult = bat(
                                    script: """
-                                   chmod +x ./jenkinsScripts/deployToVercel.sh
-                                   bat ./jenkinsScripts/deployToVercel.sh $VERCEL_TOKEN
+                                   call jenkinsScripts\\deployToVercel.bat %VERCEL_TOKEN%
                                    """,
                                    returnStatus: true
                               )
@@ -157,12 +156,40 @@ pipeline {
                                    writeFile file: 'deploy_to_vercel_result.txt', text: 'Error'
                                    error "El despliegue en Vercel falló. Revisa el log para más detalles."
                               } else {
-                                   writeFile file: 'deploy_to_vercel_result.txt', text: 'Correcte'
+                                   writeFile file: 'deploy_to_vercel_result.txt', text: 'Correcto'
                               }
                          }
                     }
                }
           }
+
+          // stage('Deploy to Vercel') {
+          //      when {
+          //           expression {
+          //                currentBuild.result == null || currentBuild.result == 'SUCCESS'
+          //           }
+          //      }
+          //      steps {
+          //           script {
+          //                withCredentials([string(credentialsId: 'vercel-deploy-token', variable: 'VERCEL_TOKEN')]) {
+          //                     echo "Iniciando el despliegue en Vercel..."
+          //                     def deployResult = bat(
+          //                          script: """
+          //                          chmod +x ./jenkinsScripts/deployToVercel.sh
+          //                          bat ./jenkinsScripts/deployToVercel.sh $VERCEL_TOKEN
+          //                          """,
+          //                          returnStatus: true
+          //                     )
+          //                     if (deployResult != 0) {
+          //                          writeFile file: 'deploy_to_vercel_result.txt', text: 'Error'
+          //                          error "El despliegue en Vercel falló. Revisa el log para más detalles."
+          //                     } else {
+          //                          writeFile file: 'deploy_to_vercel_result.txt', text: 'Correcte'
+          //                     }
+          //                }
+          //           }
+          //      }
+          // }
 
           // stage('Notificació') {
           //      steps {
