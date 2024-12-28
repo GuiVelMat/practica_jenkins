@@ -16,11 +16,11 @@ pipeline {
                steps {
                     script {
                          echo "Instalando dependencias..."
-                         sh 'npm install'
+                         bat 'npm install'
                          echo "Instalando CLI de Vercel..."
-                         sh 'npm install -g vercel' // Instalación global de la CLI de Vercel
+                         bat 'npm install -g vercel' // Instalación global de la CLI de Vercel
                          echo "Verificando la instalación de la CLI de Vercel..."
-                         sh 'vercel --version' // Esto debe devolver la versión instalada de la CLI de Vercel
+                         bat 'vercel --version' // Esto debe devolver la versión instalada de la CLI de Vercel
                     }
                }
           }
