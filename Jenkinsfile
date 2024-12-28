@@ -76,27 +76,28 @@ pipeline {
                }
           }
 
-          // stage('Push_Changes') {
-          //      steps {
-          //           script {
-          //                withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
-          //                     echo "Realizando el push al repositorio remoto..."
+          stage('Push_Changes') {
+               steps {
+                    script {
+                         withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
+                              echo "Realizando el push al repositorio remoto..."
 
-          //                     def pushResult = bat(
-          //                          script: """
-          //                          powershell -Command "ssh-add.exe $SSH_KEY"
-          //                          call jenkinsScripts\\pushChanges.bat ${params.EXECUTOR} ${params.MOTIVO}
-          //                          """,
-          //                          returnStatus: true
-          //                     )
+                              def pushResult = bat(
+                                   script: """
+                                   powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; `\
+                                   \$env:SSH_KEY = '${SSH_KEY}'; `\
+                                   .\\jenkinsScripts\\pushChanges.ps1 -executor '${params.EXECUTOR}' -motivo '${params.MOTIVO}'"
+                                   """,
+                                   returnStatus: true
+                              )
 
-          //                     if (pushResult != 0) {
-          //                          error "El push falló. Revisa el log para más detalles."
-          //                     }
-          //                }
-          //           }
-          //      }
-          // }
+                              if (pushResult != 0) {
+                                   error "El push falló. Revisa el log para más detalles."
+                              }
+                         }
+                    }
+               }
+          }
 
           // stage('Push_Changes') {
           //      steps {
@@ -162,34 +163,6 @@ pipeline {
                     }
                }
           }
-
-          // stage('Deploy to Vercel') {
-          //      when {
-          //           expression {
-          //                currentBuild.result == null || currentBuild.result == 'SUCCESS'
-          //           }
-          //      }
-          //      steps {
-          //           script {
-          //                withCredentials([string(credentialsId: 'vercel-deploy-token', variable: 'VERCEL_TOKEN')]) {
-          //                     echo "Iniciando el despliegue en Vercel..."
-          //                     def deployResult = bat(
-          //                          script: """
-          //                          chmod +x ./jenkinsScripts/deployToVercel.sh
-          //                          bat ./jenkinsScripts/deployToVercel.sh $VERCEL_TOKEN
-          //                          """,
-          //                          returnStatus: true
-          //                     )
-          //                     if (deployResult != 0) {
-          //                          writeFile file: 'deploy_to_vercel_result.txt', text: 'Error'
-          //                          error "El despliegue en Vercel falló. Revisa el log para más detalles."
-          //                     } else {
-          //                          writeFile file: 'deploy_to_vercel_result.txt', text: 'Correcte'
-          //                     }
-          //                }
-          //           }
-          //      }
-          // }
 
           // stage('Notificació') {
           //      steps {
