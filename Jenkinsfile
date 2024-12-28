@@ -79,14 +79,37 @@ pipeline {
           stage('Push_Changes') {
                steps {
                     script {
+                              withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
+                                   echo "Realizando el push al repositorio remoto..."
+
+                                   def pushResult = bat(
+                                        script: """
+                                        set SSH_KEY=${SSH_KEY}
+                                        call jenkinsScripts\\pushChanges.bat '${params.EXECUTOR}' '${params.MOTIVO}'
+                                        """,
+                                        returnStatus: true
+                                   )
+
+                                   if (pushResult != 0) {
+                                        error "El push falló. Revisa el log para más detalles."
+                                   }
+                              }
+                    }
+               }
+          }
+
+          stage('Push_Changes') {
+               steps {
+                    script {
                          withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
                               echo "Realizando el push al repositorio remoto..."
 
                               def pushResult = bat(
                                    script: """
-                                   powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; `\
-                                   \$env:SSH_KEY = '${SSH_KEY}'; `\
-                                   .\\jenkinsScripts\\pushChanges.ps1 -executor '${params.EXECUTOR}' -motivo '${params.MOTIVO}'"
+                                   chmod 600 $SSH_KEY
+                                   eval \$(ssh-agent -s)
+                                   ssh-add $SSH_KEY
+                                   bat ./jenkinsScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
                                    """,
                                    returnStatus: true
                               )
@@ -98,30 +121,6 @@ pipeline {
                     }
                }
           }
-
-          // stage('Push_Changes') {
-          //      steps {
-          //           script {
-          //                withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
-          //                     echo "Realizando el push al repositorio remoto..."
-
-          //                     def pushResult = bat(
-          //                          script: """
-          //                          chmod 600 $SSH_KEY
-          //                          eval \$(ssh-agent -s)
-          //                          ssh-add $SSH_KEY
-          //                          bat ./jenkinsScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
-          //                          """,
-          //                          returnStatus: true
-          //                     )
-
-          //                     if (pushResult != 0) {
-          //                          error "El push falló. Revisa el log para más detalles."
-          //                     }
-          //                }
-          //           }
-          //      }
-          // }
 
           stage('Build') {
                steps {
