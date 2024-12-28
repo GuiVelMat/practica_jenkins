@@ -29,7 +29,7 @@ pipeline {
                steps {
                     script {
                          echo "Ejecutando ESLint para revisar el código..."
-                         def lintResult = sh script: 'npx eslint .', returnStatus: true
+                         def lintResult = bat script: 'npx eslint .', returnStatus: true
 
                          if (lintResult != 0) {
                               writeFile file: 'linter_result.txt', text: 'Error'
@@ -46,7 +46,7 @@ pipeline {
                steps {
                     script {
                          echo "Ejecutando tests con Jest..."
-                         def testResult = sh(script: 'npm test', returnStatus: true)
+                         def testResult = bat(script: 'npm test', returnStatus: true)
 
                          if (testResult != 0) {
                               writeFile file: 'test_result.txt', text: 'Error'
@@ -66,7 +66,7 @@ pipeline {
 
                          echo "Actualizando el README.md con el resultado de los tests (${testResult})..."
 
-                         sh """
+                         bat """
                          echo "Ejecutando el script updateReadme.js con TEST_RESULT=${testResult}..."
                          node ./jenkinsScripts/updateReadme.js ${testResult}
                          """
@@ -82,12 +82,12 @@ pipeline {
                          withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
                               echo "Realizando el push al repositorio remoto..."
 
-                              def pushResult = sh(
+                              def pushResult = bat(
                                    script: """
                                    chmod 600 $SSH_KEY
                                    eval \$(ssh-agent -s)
                                    ssh-add $SSH_KEY
-                                   sh ./jenkinsScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
+                                   bat ./jenkinsScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
                                    """,
                                    returnStatus: true
                               )
@@ -104,7 +104,7 @@ pipeline {
                steps {
                     script {
                          echo "Realizando el build del proyecto..."
-                         def buildResult = sh script: 'npm run build', returnStatus: true
+                         def buildResult = bat script: 'npm run build', returnStatus: true
 
                          if (buildResult != 0) {
                               error "El proceso de build falló. Por favor, revisa los errores antes de continuar."
@@ -124,10 +124,10 @@ pipeline {
                     script {
                          withCredentials([string(credentialsId: 'vercel-deploy-token', variable: 'VERCEL_TOKEN')]) {
                               echo "Iniciando el despliegue en Vercel..."
-                              def deployResult = sh(
+                              def deployResult = bat(
                                    script: """
                                    chmod +x ./jenkinsScripts/deployToVercel.sh
-                                   sh ./jenkinsScripts/deployToVercel.sh $VERCEL_TOKEN
+                                   bat ./jenkinsScripts/deployToVercel.sh $VERCEL_TOKEN
                                    """,
                                    returnStatus: true
                               )
@@ -159,7 +159,7 @@ pipeline {
           //                     - Deploy_to_Vercel_stage: ${deployToVercelResult}
           //                     """.stripIndent()
 
-          //                     sh """
+          //                     bat """
           //                     chmod +x ./jenkinsScripts/sendTelegramMessage.sh
           //                     ./jenkinsScripts/sendTelegramMessage.sh "$TELEGRAM_TOKEN" "${params.CHAT_ID}" "${message}"
           //                     """
