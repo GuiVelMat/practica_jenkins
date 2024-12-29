@@ -8,7 +8,7 @@ pipeline {
      parameters {
           string(name: 'EXECUTOR', defaultValue: '', description: 'Nombre de la persona que ejecuta la pipeline')
           string(name: 'MOTIVO', defaultValue: '', description: 'Motivo por el cual se ejecuta la pipeline')
-          // string(name: 'CHAT_ID', defaultValue: '', description: 'Chat ID de Telegram para las notificaciones')
+          string(name: 'CHAT_ID', defaultValue: '', description: 'Chat ID de Telegram para las notificaciones')
      }
 
      stages {
@@ -76,29 +76,6 @@ pipeline {
                }
           }
 
-          stage('Push_Changes') {
-               steps {
-                    script {
-                         withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
-                              echo "Realizando el push al repositorio remoto..."
-
-                              def pushResult = bat(
-                                   script: """
-                                   ssh-add %SSH_KEY%
-                                   call jenkinsScripts\\pushChanges.bat "${params.EXECUTOR}" "${params.MOTIVO}"
-                                   """,
-                                   returnStatus: true
-                              )
-
-                              if (pushResult != 0) {
-                                   error "El push falló. Revisa el log para más detalles."
-                              }
-                         }
-                    }
-               }
-          }
-
-
           // stage('Push_Changes') {
           //      steps {
           //           script {
@@ -107,10 +84,8 @@ pipeline {
 
           //                     def pushResult = bat(
           //                          script: """
-          //                          chmod 600 $SSH_KEY
-          //                          eval \$(ssh-agent -s)
-          //                          ssh-add $SSH_KEY
-          //                          bat ./jenkinsScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
+          //                          ssh-add %SSH_KEY%
+          //                          call jenkinsScripts\\pushChanges.bat "${params.EXECUTOR}" "${params.MOTIVO}"
           //                          """,
           //                          returnStatus: true
           //                     )
@@ -164,38 +139,39 @@ pipeline {
                }
           }
 
-          // stage('Notificació') {
-          //      steps {
-          //           script {
-          //                withCredentials([string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN')]) {
-          //                     def linterResult = readFile('linter_result.txt').trim()
-          //                     def testResult = readFile('test_result.txt').trim()
-          //                     def updateReadmeResult = readFile('update_readme_result.txt').trim()
-          //                     def deployToVercelResult = readFile('deploy_to_vercel_result.txt').trim()
+          stage('Notificació') {
+               steps {
+                    script {
+                              withCredentials([string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN')]) {
+                                   def linterResult = readFile('linter_result.txt').trim()
+                                   def testResult = readFile('test_result.txt').trim()
+                                   def deployToVercelResult = readFile('deploy_to_vercel_result.txt').trim()
 
-          //                     def message = """
-          //                     S'ha executat la pipeline de Jenkins amb els següents resultats:
-          //                     - Linter_stage: ${linterResult}
-          //                     - Test_stage: ${testResult}
-          //                     - Update_readme_stage: ${updateReadmeResult}
-          //                     - Deploy_to_Vercel_stage: ${deployToVercelResult}
-          //                     """.stripIndent()
+                                   def message = """
+                                   Se ha ejecutado la pipeline de Jenkins con los siguientes resultados:
+                                   - Linter_stage: ${linterResult}
+                                   - Test_stage: ${testResult}
+                                   - Deploy_to_Vercel_stage: ${deployToVercelResult}
+                                   """.stripIndent()
 
-          //                     bat """
-          //                     chmod +x ./jenkinsScripts/sendTelegramMessage.sh
-          //                     ./jenkinsScripts/sendTelegramMessage.sh "$TELEGRAM_TOKEN" "${params.CHAT_ID}" "${message}"
-          //                     """
-          //                }
-          //           }
-          //      }
-          // }
+                                   script: """
+                                   call jenkinsScripts\\sendTelegramMessage.bat %TELGRAM_TOKEN% ${params.CHAT_ID} ${message}
+                                   """
+
+                                   // bat """
+                                   // powershell -Command "& {Set-ExecutionPolicy Unrestricted -Scope Process; .\\jenkinsScripts\\sendTelegramMessage.ps1 '%TELEGRAM_TOKEN%' '${params.CHAT_ID}' '${message}'}"
+                                   // """
+                              }
+                    }
+               }
+          }
 
           stage('Petició de dades') {
                steps {
                     script {
                          echo "Executor: ${params.EXECUTOR}"
                          echo "Motivo: ${params.MOTIVO}"
-                         // echo "Chat ID: ${params.CHAT_ID}"
+                         echo "Chat ID: ${params.CHAT_ID}"
                     }
                }
           }

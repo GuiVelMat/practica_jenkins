@@ -1,9 +1,6 @@
 @echo off
 setlocal
 
-REM Configurar Git para ignorar diferencias en saltos de línea
-git config core.autocrlf false
-
 REM Personalizar el mensaje del commit
 set "COMMIT_MSG=Pipeline ejecutada por %1. Motivo: %2"
 
@@ -15,19 +12,16 @@ git config --global user.name "%1"
 git config --global user.email "gvm0898@gmail.com"
 
 REM Preparar los cambios para el commit
-git add README.md
+git add .
 
 REM Crear el commit con el mensaje proporcionado
 git commit -m "%COMMIT_MSG%" || echo "Nada que commitear."
 
-REM Verificar y crear la rama remota si no existe
-git branch -r | findstr "origin/ci_jenkins" || git push origin HEAD:refs/heads/ci_jenkins
-
-REM Hacer push a la rama especificada (ci_jenkins)
-git push origin HEAD:ci_jenkins || (
+REM Hacer push a la rama especificada (pruebas)
+git push origin HEAD:pruebas || (
     echo "Error al hacer push. Intentando hacer pull con rebase..."
-    git pull --rebase origin ci_jenkins
-    git push origin HEAD:ci_jenkins
+    git pull --rebase origin pruebas
+    git push origin HEAD:pruebas
 )
 
 exit /b 0
