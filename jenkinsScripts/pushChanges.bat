@@ -17,11 +17,11 @@ git add README.md
 REM Crear el commit con el mensaje proporcionado
 git commit -m "%COMMIT_MSG%" || echo "Nada que commitear."
 
-REM Hacer push a la rama especificada (ci_jenkins en tu caso)
-git push origin HEAD:ci_jenkins || (
+REM Hacer push a la rama especificada (pruebas en tu caso)
+git push origin HEAD:pruebas || (
     echo "Error al hacer push. Intentando hacer pull con rebase..."
-    git pull --rebase origin ci_jenkins
-    git push origin HEAD:ci_jenkins
+    git pull --rebase origin pruebas
+    git push origin HEAD:pruebas
 )
 
 exit /b 0
