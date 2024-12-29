@@ -2,12 +2,12 @@
 setlocal
 
 REM Verificar que se proporcionaron el token y el chat ID
-if "%1"=="" (
+if %1 eq "" (
      echo Error: Token no proporcionado.
      exit /b 1
 )
 
-if "%2"=="" (
+if %2 eq "" (
      echo Error: Chat ID no proporcionado.
      exit /b 1
 )
@@ -23,7 +23,7 @@ curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" ^
      -d text="%MESSAGE%" >nul
 
 REM Verificar si el mensaje se envió correctamente
-if "%ERRORLEVEL%"=="0" (
+if %ERRORLEVEL% eq 0 (
      echo Mensaje enviado correctamente a Telegram.
 ) else (
      echo Error al enviar el mensaje a Telegram.
