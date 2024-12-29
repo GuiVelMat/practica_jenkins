@@ -15,12 +15,12 @@ if %2 eq "" (
 REM Variables
 set TOKEN=%1
 set CHAT_ID=%2
-set MESSAGE=%3
+set MESSAGE=%~3
 
 REM Enviar mensaje a Telegram
 curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" ^
      -d chat_id="%CHAT_ID%" ^
-     -d text="hola" >nul
+     -d text="%MESSAGE%" >nul
 
 REM Verificar si el mensaje se envió correctamente
 if %ERRORLEVEL% eq 0 (
