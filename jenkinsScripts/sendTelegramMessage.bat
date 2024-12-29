@@ -6,8 +6,6 @@ REM token
 echo %~1
 REM chat_id
 echo %2
-REM message
-echo %3
 
 REM Verificar que se proporcionaron el token y el chat ID
 if "%~1"=="" (
@@ -31,7 +29,7 @@ echo %MESSAGE%
 REM Enviar mensaje a Telegram
 curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" ^
      -d chat_id="%CHAT_ID%" ^
-     -d text="%MESSAGE%"
+     -d text=%MESSAGE%
 
 REM Verificar si el mensaje se envió correctamente
 if %ERRORLEVEL% == 0 (
