@@ -6,6 +6,7 @@ REM token
 echo %~1
 REM chat_id
 echo %2
+echo %3
 
 REM Verificar que se proporcionaron el token y el chat ID
 if "%~1"=="" (
