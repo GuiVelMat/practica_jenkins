@@ -4,10 +4,10 @@ setlocal
 echo "envie un mensaje a telegram"
 REM token
 echo %~1
-REM message
-echo %~2
 REM chat_id
-echo %~3
+echo %2
+REM message
+echo %3
 
 REM Verificar que se proporcionaron el token y el chat ID
 if "%~1"=="" (
@@ -22,9 +22,10 @@ if "%~2"=="" (
 
 REM Variables
 set TOKEN=%1
+set CHAT_ID=%2
 REM set CHAT_ID="192580428"
-set MESSAGE=%~2
-set CHAT_ID=%3
+set MESSAGE=%3
+
 
 REM Enviar mensaje a Telegram
 curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" ^
