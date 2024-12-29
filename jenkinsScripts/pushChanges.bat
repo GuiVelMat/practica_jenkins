@@ -5,7 +5,7 @@ REM Configurar Git para ignorar diferencias en saltos de línea
 git config core.autocrlf false
 
 REM Personalizar el mensaje del commit
-set "COMMIT_MSG=Pipeline ejecutada por %1. Motivo: %2"
+set "COMMIT_MSG=Pipeline ejecutada por Guido. Motivo: prueba"
 
 REM Configurar el acceso a GitHub
 ssh-keyscan -t rsa github.com >> %USERPROFILE%\.ssh\known_hosts
