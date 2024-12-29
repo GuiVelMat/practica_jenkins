@@ -1,13 +1,18 @@
 @echo off
 setlocal
 
+echo "envie un mensaje a telegram"
+echo %~1
+echo %~2
+echo %~3
+
 REM Verificar que se proporcionaron el token y el chat ID
-if %1 eq "" (
+if "%~1" eq "" (
      echo Error: Token no proporcionado.
      exit /b 1
 )
 
-if %2 eq "" (
+if "%~2" eq "" (
      echo Error: Chat ID no proporcionado.
      exit /b 1
 )
