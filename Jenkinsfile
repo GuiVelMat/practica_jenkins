@@ -84,8 +84,8 @@ pipeline {
 
                               def pushResult = bat(
                                    script: """
-                                   set "SSH_KEY='%SSH_KEY%'"
-                                   call "${WORKSPACE}\\jenkinsScripts\\pushChanges.bat" '${params.EXECUTOR}' '${params.MOTIVO}'
+                                   ssh-add %SSH_KEY%
+                                   call jenkinsScripts\\pushChanges.bat '${params.EXECUTOR}' '${params.MOTIVO}'
                                    """,
                                    returnStatus: true
                               )
