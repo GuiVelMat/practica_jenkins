@@ -147,9 +147,9 @@ pipeline {
                               def testResult = readFile('test_result.txt').trim()
                               def deployToVercelResult = readFile('deploy_to_vercel_result.txt').trim()
 
-                              def message = "Se ha ejecutado la pipeline de Jenkins con los siguientes resultados: %0A" +
-                                   "Linter_stage: ${linterResult} %0A" +
-                                   "Test_stage: ${testResult} // %0A" +
+                              def message = "Se ha ejecutado la pipeline de Jenkins con los siguientes resultados: &#10;" +
+                                   "Linter_stage: ${linterResult} &#10; " +
+                                   "Test_stage: ${testResult} &#10; " +
                                    "Deploy_to_Vercel_stage: ${deployToVercelResult}"
 
                               def envioTelegram = bat (
