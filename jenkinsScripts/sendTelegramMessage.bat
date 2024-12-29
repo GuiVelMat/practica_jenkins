@@ -16,6 +16,8 @@ if "%~2"=="" (
      exit /b 1
 )
 
+echo "pasa los if"
+
 REM Variables
 set TOKEN=%1
 set CHAT_ID=%2
