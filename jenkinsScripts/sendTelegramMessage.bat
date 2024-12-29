@@ -29,7 +29,7 @@ curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" ^
      -d text="%MESSAGE%" >nul
 
 REM Verificar si el mensaje se envió correctamente
-if %ERRORLEVEL% eq 0 (
+if %ERRORLEVEL% == 0 (
      echo Mensaje enviado correctamente a Telegram.
 ) else (
      echo Error al enviar el mensaje a Telegram.
