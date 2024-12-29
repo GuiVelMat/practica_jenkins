@@ -20,7 +20,7 @@ set MESSAGE=%3
 REM Enviar mensaje a Telegram
 curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" ^
      -d chat_id="%CHAT_ID%" ^
-     -d text="%MESSAGE%" >nul
+     -d text="hola" >nul
 
 REM Verificar si el mensaje se envió correctamente
 if %ERRORLEVEL% eq 0 (
