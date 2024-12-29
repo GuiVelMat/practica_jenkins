@@ -142,30 +142,35 @@ pipeline {
           stage('Notificaciones') {
                steps {
                     script {
-                              withCredentials([string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN')]) {
-                                   def linterResult = readFile('linter_result.txt').trim()
-                                   def testResult = readFile('test_result.txt').trim()
-                                   def deployToVercelResult = readFile('deploy_to_vercel_result.txt').trim()
+                         withCredentials([string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN')]) {
+                              // Leer resultados desde archivos
+                              def linterResult = readFile('linter_result.txt').trim()
+                              def testResult = readFile('test_result.txt').trim()
+                              def deployToVercelResult = readFile('deploy_to_vercel_result.txt').trim()
 
-                                   def message = """
+                              // Construir el mensaje
+                              def message = """
                                    Se ha ejecutado la pipeline de Jenkins con los siguientes resultados:
                                    - Linter_stage: ${linterResult}
                                    - Test_stage: ${testResult}
                                    - Deploy_to_Vercel_stage: ${deployToVercelResult}
-                                   """.stripIndent()
+                              """.stripIndent().replace('\n', '%0A') // Reemplazar saltos de línea para pasarlos correctamente en la URL
 
-                                   def envioTelegram = bat (
-                                        script: """
-                                        call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID}
-                                        """,
-                                        returnStatus: true
-                                   )
-                                   if (envioTelegram != 0) {
-                                        error "El envío de la notificación a Telegram falló. Revisa el log para más detalles."
-                                   } else {
-                                        echo "Notificación enviada correctamente."
-                                   }
+                              // Ejecutar el script batch
+                              def envioTelegram = bat(
+                                   script: """
+                                   call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} "${message}"
+                                   """,
+                                   returnStatus: true
+                              )
+
+                              // Verificar el resultado
+                              if (envioTelegram != 0) {
+                                   error "El envío de la notificación a Telegram falló. Revisa el log para más detalles."
+                              } else {
+                                   echo "Notificación enviada correctamente."
                               }
+                         }
                     }
                }
           }
