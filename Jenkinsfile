@@ -155,7 +155,7 @@ pipeline {
                                    """.stripIndent()
 
                                    script: """
-                                   call jenkinsScripts\\sendTelegramMessage.bat %TELGRAM_TOKEN% ${params.CHAT_ID} ${message}
+                                   call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} ${message}
                                    """
 
                                    // bat """
