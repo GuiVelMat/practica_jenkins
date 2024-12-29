@@ -12,7 +12,7 @@ ssh-keyscan -t rsa github.com >> %USERPROFILE%\.ssh\known_hosts
 
 REM Configurar el usuario y correo de Git
 git config --global user.name "%1"
-git config --global user.email "jenkins@pipeline.local"
+git config --global user.email "gvm0898@gmail.com"
 
 REM Preparar los cambios para el commit
 git add README.md

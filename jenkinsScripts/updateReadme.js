@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // Ruta del archivo README.md
-const readmePath = './README.md';
+const readmePath = '../README.md';
 
 // Badge URLs
 const successBadge = '![Success](https://img.shields.io/badge/tested%20with-Cypress-04C38E.svg)';
