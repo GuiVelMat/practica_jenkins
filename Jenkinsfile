@@ -154,7 +154,7 @@ pipeline {
                                    - Deploy_to_Vercel_stage: ${deployToVercelResult}
                                    """.stripIndent()
 
-                                   script: """
+                                   bat """
                                    call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} ${message}
                                    """
 
