@@ -154,13 +154,17 @@ pipeline {
                                    - Deploy_to_Vercel_stage: ${deployToVercelResult}
                                    """.stripIndent()
 
-                                   // bat """
-                                   // call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} ${message}
-                                   // """
-
-                                   bat """
-                                   powershell -Command "& {Set-ExecutionPolicy Unrestricted -Scope Process; .\\jenkinsScripts\\sendTelegramMessage.bat '%TELEGRAM_TOKEN%' '${params.CHAT_ID}' '${message}'}"
-                                   """
+                                   def envioTelegram = bat (
+                                        script: """
+                                        call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} ${message}
+                                        """,
+                                        returnStatus: true
+                                   )
+                                   if (envioTelegram != 0) {
+                                        error "El envío de la notificación a Telegram falló. Revisa el log para más detalles."
+                                   } else {
+                                        echo "Notificación enviada correctamente."
+                                   }
                               }
                     }
                }
