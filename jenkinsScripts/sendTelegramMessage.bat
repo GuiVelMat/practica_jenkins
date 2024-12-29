@@ -22,7 +22,8 @@ REM Variables
 set TOKEN=%1
 set CHAT_ID=%2
 REM set CHAT_ID="192580428"
-set MESSAGE="Todo funciona correctamente"
+@REM set MESSAGE="Todo funciona correctamente"
+set MESSAGE=%3
 
 echo %MESSAGE%
 
