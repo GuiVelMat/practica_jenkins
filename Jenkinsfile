@@ -52,7 +52,7 @@ pipeline {
                               writeFile file: 'test_result.txt', text: 'Error'
                               error "Se encontraron errores en los tests. Por favor, corrígelos antes de continuar."
                          } else {
-                              writeFile file: 'test_result.txt', text: 'Correcte'
+                              writeFile file: 'test_result.txt', text: 'Correcto'
                          }
                          echo "Todos los tests pasaron correctamente."
                     }
@@ -71,7 +71,7 @@ pipeline {
                          node ./jenkinsScripts/updateReadme.js ${testResult}
                          """
 
-                         writeFile file: 'update_readme_result.txt', text: 'Correcte'
+                         writeFile file: 'update_readme_result.txt', text: 'Correcto'
                     }
                }
           }
