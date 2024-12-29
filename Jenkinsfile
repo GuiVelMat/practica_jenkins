@@ -154,13 +154,13 @@ pipeline {
                                    - Deploy_to_Vercel_stage: ${deployToVercelResult}
                                    """.stripIndent()
 
-                                   bat """
-                                   call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} ${message}
-                                   """
-
                                    // bat """
-                                   // powershell -Command "& {Set-ExecutionPolicy Unrestricted -Scope Process; .\\jenkinsScripts\\sendTelegramMessage.ps1 '%TELEGRAM_TOKEN%' '${params.CHAT_ID}' '${message}'}"
+                                   // call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} ${message}
                                    // """
+
+                                   bat """
+                                   powershell -Command "& {Set-ExecutionPolicy Unrestricted -Scope Process; .\\jenkinsScripts\\sendTelegramMessage.bat '%TELEGRAM_TOKEN%' '${params.CHAT_ID}' '${message}'}"
+                                   """
                               }
                     }
                }
