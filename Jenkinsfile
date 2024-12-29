@@ -156,7 +156,7 @@ pipeline {
 
                               def envioTelegram = bat (
                                    script: """
-                                   call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} ${message}
+                                   call jenkinsScripts\\sendTelegramMessage.bat %TELEGRAM_TOKEN% ${params.CHAT_ID} "${message}"
                                    """,
                                    returnStatus: true
                               )
