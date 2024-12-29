@@ -139,7 +139,7 @@ pipeline {
                }
           }
 
-          stage('Notificació') {
+          stage('Notificaciones') {
                steps {
                     script {
                               withCredentials([string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN')]) {
