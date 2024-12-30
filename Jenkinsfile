@@ -2,7 +2,7 @@ pipeline {
      agent any
 
      tools {
-          nodejs "Node" // Asegúrate de que "Node" coincida con el nombre configurado en Jenkins
+          nodejs "Node"
      }
 
      parameters {
@@ -12,15 +12,15 @@ pipeline {
      }
 
      stages {
-          stage('Install Dependencies') {
+          stage('Dependencias') {
                steps {
                     script {
                          echo "Instalando dependencias..."
                          bat 'npm install'
                          echo "Instalando CLI de Vercel..."
-                         bat 'npm install -g vercel' // Instalación global de la CLI de Vercel
+                         bat 'npm install -g vercel'
                          echo "Verificando la instalación de la CLI de Vercel..."
-                         bat 'vercel --version' // Esto debe devolver la versión instalada de la CLI de Vercel
+                         bat 'vercel --version'
                     }
                }
           }
@@ -42,7 +42,7 @@ pipeline {
                }
           }
 
-          stage('Test') {
+          stage('Jest') {
                steps {
                     script {
                          echo "Ejecutando tests con Jest..."
@@ -112,7 +112,7 @@ pipeline {
                }
           }
 
-          stage('Deploy to Vercel') {
+          stage('Vercel') {
                when {
                     expression {
                          currentBuild.result == null || currentBuild.result == 'SUCCESS'
@@ -168,7 +168,7 @@ pipeline {
                }
           }
 
-          stage('Petició de dades') {
+          stage('Petición_de_datos') {
                steps {
                     script {
                          echo "Executor: ${params.EXECUTOR}"
